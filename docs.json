@@ -1,72 +1,114 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "name": "Geek Hub",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#D982F2",
+    "light": "#E699F5",
+    "dark": "#2A1638"
   },
   "favicon": "/favicon.svg",
   "navigation": {
-    "pages": [
+    "anchors": [
       {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "quickstart"
+        "anchor": "Documentation",
+        "icon": "book-open",
+        "groups": [
+          {
+            "group": "Empezar",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "authentication"
+            ]
+          },
+          {
+            "group": "Conceptos",
+            "pages": [
+              "concepts/billing",
+              "concepts/balance",
+              "concepts/errors"
+            ]
+          }
         ]
+      },
+      {
+        "anchor": "API Reference",
+        "icon": "code",
+        "groups": [
+          {
+            "group": "Chat",
+            "pages": [
+              "api-reference/chat/overview",
+              "api-reference/chat/completions"
+            ]
+          },
+          {
+            "group": "Imágenes",
+            "pages": [
+              "api-reference/images/overview",
+              "api-reference/images/generations"
+            ]
+          },
+          {
+            "group": "Video",
+            "pages": [
+              "api-reference/videos/overview",
+              "api-reference/videos/generations",
+              "api-reference/videos/poll"
+            ]
+          }
+        ]
+      },
+      {
+        "anchor": "Modelos",
+        "icon": "sparkles",
+        "groups": [
+          {
+            "group": "Catálogo",
+            "pages": [
+              "models/index",
+              "models/chat",
+              "models/images",
+              "models/videos"
+            ]
+          }
+        ]
+      },
+      {
+        "anchor": "Soporte",
+        "href": "https://app.geekhub.mx/support",
+        "icon": "life-ring"
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
+    ]
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/logo-light.svg",
+    "dark": "/logo-dark.svg"
+  },
+  "background": {
+    "color": {
+      "light": "#F6F2F8",
+      "dark": "#150921"
+    }
   },
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "label": "Dashboard",
+        "href": "https://app.geekhub.mx"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "label": "Crear cuenta",
+      "href": "https://app.geekhub.mx/signup"
     }
-  },
-  "contextual": {
-    "options": [
-      "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
-    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/greaves4",
+      "x": "https://x.com/geekvibes"
     }
   }
 }
