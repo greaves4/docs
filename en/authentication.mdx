@@ -1,40 +1,40 @@
 ---
-title: "Autenticación"
-description: "Cómo generar, usar y rotar tus API keys"
+title: "Authentication"
+description: "How to generate, use, and rotate your API keys"
 ---
 
-Geek Hub usa **API keys con prefijo `ghub_sk_`** que se envían en el header `Authorization: Bearer`.
+Geek Hub uses **API keys with the `ghub_sk_` prefix** sent in the `Authorization: Bearer` header.
 
-## Formato de las keys
+## Key format
 
-| Tipo | Prefijo | Uso |
+| Type | Prefix | Use |
 |------|---------|-----|
-| Producción | `ghub_sk_live_` | Llamadas reales, consumen saldo |
-| Sandbox _(próximo)_ | `ghub_sk_test_` | Pruebas sin saldo |
+| Production | `ghub_sk_live_` | Real calls, consume balance |
+| Sandbox _(coming soon)_ | `ghub_sk_test_` | Testing without balance |
 
-Cada key tiene **45 caracteres** en total. El prefijo `ghub_sk_live_` (13 chars) + 32 chars aleatorios.
+Each key is **45 characters** total. The `ghub_sk_live_` prefix (13 chars) + 32 random chars.
 
-## Generar una API key
+## Generate an API key
 
-1. Entra al [dashboard](https://app.geekhub.mx/dashboard/keys)
-2. Click **Nueva API key**
-3. Dale un nombre descriptivo (`prod-web`, `ci-bot`, `staging`)
-4. Te mostramos la key **una sola vez** — guárdala antes de cerrar
+1. Go to the [dashboard](https://app.geekhub.mx/dashboard/keys)
+2. Click **New API key**
+3. Give it a descriptive name (`prod-web`, `ci-bot`, `staging`)
+4. We show the key **only once** — save it before closing
 
 <Warning>
-  Si pierdes la key, no podemos recuperarla. Tienes que revocar la actual y generar una nueva.
+  If you lose the key, we cannot recover it. You have to revoke the current one and generate a new one.
 </Warning>
 
-## Usar tu API key
+## Use your API key
 
-Pásala en el header `Authorization`:
+Pass it in the `Authorization` header:
 
 ```bash
 curl https://api.geekhub.mx/v1/models \
   -H "Authorization: Bearer ghub_sk_live_xxxxx"
 ```
 
-O con los SDKs:
+Or with SDKs:
 
 <CodeGroup>
 
@@ -43,7 +43,7 @@ from openai import OpenAI
 
 client = OpenAI(
     base_url="https://api.geekhub.mx/v1",
-    api_key="ghub_sk_live_xxxxx",  # idealmente desde env var
+    api_key="ghub_sk_live_xxxxx",  # ideally from env var
 )
 ```
 
@@ -58,32 +58,32 @@ const client = new OpenAI({
 
 </CodeGroup>
 
-## Mejores prácticas
+## Best practices
 
 <AccordionGroup>
-  <Accordion title="No hardcodees keys en código" icon="lock">
-    Usa variables de entorno (`process.env.GEEKHUB_API_KEY`) o servicios de secrets (AWS Secrets Manager, Vault, etc).
+  <Accordion title="Don't hardcode keys in code" icon="lock">
+    Use environment variables (`process.env.GEEKHUB_API_KEY`) or secrets services (AWS Secrets Manager, Vault, etc).
   </Accordion>
 
-  <Accordion title="Una key por entorno / app" icon="layer-group">
-    Crea keys separadas para producción, staging, CI, etc. Si una se compromete, revocas solo esa.
+  <Accordion title="One key per environment / app" icon="layer-group">
+    Create separate keys for production, staging, CI, etc. If one is compromised, you only revoke that one.
   </Accordion>
 
-  <Accordion title="Revoca keys sin uso" icon="trash">
-    En el dashboard, las keys sin tráfico aparecen marcadas. Revócalas para reducir superficie de ataque.
+  <Accordion title="Revoke unused keys" icon="trash">
+    In the dashboard, unused keys appear marked. Revoke them to reduce attack surface.
   </Accordion>
 
-  <Accordion title="Rota periódicamente" icon="rotate">
-    Cada 90 días: genera nueva, despliega, revoca la vieja.
+  <Accordion title="Rotate periodically" icon="rotate">
+    Every 90 days: generate new, deploy, revoke the old one.
   </Accordion>
 </AccordionGroup>
 
-## Errores comunes de autenticación
+## Common authentication errors
 
-| Código HTTP | Mensaje | Causa |
+| HTTP code | Message | Cause |
 |-------------|---------|-------|
-| `401` | `missing_api_key` | No mandaste header `Authorization` |
-| `401` | `invalid_api_key` | Key no existe o está revocada |
-| `402` | `insufficient_balance` | Tu saldo es ≤ $0 MXN, recarga |
+| `401` | `missing_api_key` | You didn't send the `Authorization` header |
+| `401` | `invalid_api_key` | Key doesn't exist or is revoked |
+| `402` | `insufficient_balance` | Your balance is ≤ $0 MXN, top up |
 
-Ver [Errores](/concepts/errors) para el catálogo completo.
+See [Errors](/en/concepts/errors) for the full catalog.

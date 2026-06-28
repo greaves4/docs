@@ -1,18 +1,18 @@
 ---
 title: "GET /v1/videos/{id}"
-description: "Polea el estado de un job de video"
+description: "Poll a video job status"
 api: "GET https://api.geekhub.mx/v1/videos/{job_id}"
 ---
 
 ## Path params
 
 <ParamField path="job_id" type="string" required>
-  El `id` que recibiste al crear el job (formato UUID).
+  The `id` you received when creating the job (UUID format).
 </ParamField>
 
 ## Response
 
-Cuando aún está procesando:
+While still processing:
 
 ```json
 {
@@ -29,7 +29,7 @@ Cuando aún está procesando:
 }
 ```
 
-Cuando termina (`completed`):
+When finished (`completed`):
 
 ```json
 {
@@ -46,7 +46,7 @@ Cuando termina (`completed`):
 }
 ```
 
-Cuando falla:
+When it fails:
 
 ```json
 {
@@ -57,22 +57,22 @@ Cuando falla:
 }
 ```
 
-## Cuánto polear
+## How often to poll
 
-Cada provider tiene latencia distinta. Recomendación práctica:
+Each provider has different latency. Practical recommendation:
 
-| Modelo | Polea cada | Tiempo típico total |
+| Model | Poll every | Typical total time |
 |--------|------------|--------------------|
 | Kling 2 | 15s | 2-5 min |
 | Hailuo 02 | 15s | 2-4 min |
 | Runway Gen-4 | 10s | 30s-2 min |
 | Luma Ray 2 | 10s | 1-3 min |
-| Veo 3.1 (con audio) | 30s | 3-5 min |
+| Veo 3.1 (with audio) | 30s | 3-5 min |
 | Veo 3 | 20s | 2-4 min |
 
-Si polea más rápido que el provider procesa, simplemente verás `status: "processing"` repetido — no es un error.
+If you poll faster than the provider processes, you'll just see `status: "processing"` repeated — that's not an error.
 
-## Patrón TS
+## TS pattern
 
 ```typescript
 const job = await fetch("https://api.geekhub.mx/v1/videos/generations", {
@@ -102,6 +102,6 @@ while (true) {
 
 ## Storage
 
-Cuando termina, descargamos el video del provider y lo subimos a tu Supabase Storage. La `video_url` es **nuestra**, no expira y es accesible públicamente con URL UUID (mismo modelo que imágenes).
+When it finishes, we download the video from the provider and upload it to your Supabase Storage. The `video_url` is **ours**, doesn't expire, and is publicly accessible with a UUID URL (same model as images).
 
-Si el upload a Storage falla por alguna razón, fallback transparente: te regresamos la URL del provider directo (esa sí expira en ~1h-24h dependiendo del provider).
+If the upload to Storage fails for some reason, transparent fallback: we return the provider's URL directly (that one does expire in ~1h-24h depending on the provider).

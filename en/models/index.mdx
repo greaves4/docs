@@ -1,25 +1,25 @@
 ---
-title: "Catálogo de modelos"
-description: "33 modelos en 7 providers · chat, imágenes y video"
+title: "Model catalog"
+description: "33 models across 7 providers · chat, images, and video"
 ---
 
-Geek Hub expone **33 modelos** de los providers más relevantes de la industria, todos con la misma API y el mismo método de pago.
+Geek Hub exposes **33 models** from the most relevant providers in the industry, all with the same API and the same payment method.
 
 <CardGroup cols={3}>
-  <Card title="Chat" icon="message" href="/models/chat">
-    17 modelos para conversación y razonamiento
+  <Card title="Chat" icon="message" href="/en/models/chat">
+    17 models for conversation and reasoning
   </Card>
-  <Card title="Imágenes" icon="image" href="/models/images">
-    9 modelos para generación de imágenes
+  <Card title="Images" icon="image" href="/en/models/images">
+    9 models for image generation
   </Card>
-  <Card title="Video" icon="video" href="/models/videos">
-    7 modelos para generación de video
+  <Card title="Video" icon="video" href="/en/models/videos">
+    7 models for video generation
   </Card>
 </CardGroup>
 
 ## Naming convention
 
-Todos los modelos siguen el formato `<provider>/<model-slug>`:
+All models follow the `<provider>/<model-slug>` format:
 
 - `anthropic/claude-sonnet-4-6`
 - `openai/gpt-5`
@@ -27,18 +27,18 @@ Todos los modelos siguen el formato `<provider>/<model-slug>`:
 - `fal/flux-1.1-pro`
 - `xai/grok-4`
 
-El namespace deja claro qué proveedor está detrás y te permite cambiar entre alternativas con solo cambiar 1 string.
+The namespace makes clear which provider is behind it and lets you switch between alternatives by changing just 1 string.
 
-## API live de modelos
+## Live model API
 
-Para obtener la lista actualizada al momento, llama:
+For the up-to-the-minute list, call:
 
 ```bash
 curl https://api.geekhub.mx/v1/models \
   -H "Authorization: Bearer ghub_sk_live_xxx"
 ```
 
-Te devuelve algo como:
+It returns something like:
 
 ```json
 {
@@ -62,11 +62,11 @@ Te devuelve algo como:
 
 ## Pricing
 
-Los precios listados son **USD del proveedor original**. Para el costo final:
+Listed prices are **the original provider's USD**. For the final cost:
 
 ```
-costo_final_mxn = precio_provider × (1 + 0.05) × FX_MXN_USD
+final_cost_mxn = provider_price × (1 + 0.05) × FX_MXN_USD
 ```
 
-- `+5%` markup de Geek Hub
-- `FX_MXN_USD` se fija mensualmente y se anuncia a clientes (sin sorpresas)
+- `+5%` Geek Hub markup
+- `FX_MXN_USD` is fixed monthly and announced to customers (no surprises)

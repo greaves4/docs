@@ -1,32 +1,32 @@
 ---
 title: "POST /v1/images/generations"
-description: "Generación de imágenes con cualquier modelo del catálogo"
+description: "Image generation with any model from the catalog"
 api: "POST https://api.geekhub.mx/v1/images/generations"
 ---
 
 ## Request body
 
 <ParamField body="model" type="string" required>
-  El ID namespaced del modelo, ej. `fal/flux-1.1-pro`.
+  The namespaced model ID, e.g. `fal/flux-1.1-pro`.
 </ParamField>
 
 <ParamField body="prompt" type="string" required>
-  Descripción de la imagen. Máximo 4000 caracteres.
+  Image description. Maximum 4000 characters.
 </ParamField>
 
 <ParamField body="n" type="integer" default="1">
-  Número de imágenes a generar (1–8). Cada imagen cobra independiente.
+  Number of images to generate (1–8). Each image bills independently.
 </ParamField>
 
 <ParamField body="size" type="string">
-  Tamaño deseado. Lo soportado depende del modelo:
+  Desired size. What's supported depends on the model:
   - OpenAI gpt-image-1: `1024x1024`, `1536x1024`, `1024x1536`
   - OpenAI dall-e-3: `1024x1024`, `1792x1024`, `1024x1792`
   - fal/Recraft/Ideogram: `1024x1024`, `1024x768`, `768x1024`, etc.
 </ParamField>
 
 <ParamField body="quality" type="string">
-  `standard` | `hd` para OpenAI. Otros modelos lo ignoran.
+  `standard` | `hd` for OpenAI. Other models ignore it.
 </ParamField>
 
 ## Response
@@ -46,10 +46,10 @@ api: "POST https://api.geekhub.mx/v1/images/generations"
 ```
 
 <Info>
-  La URL es **nuestra** (Supabase Storage), no la del proveedor. Es persistente y no expira. Mismo modelo de seguridad que fal.media, Cloudinary o S3 unsigned: la URL incluye 2 UUIDs (`org_id` + `request_id`) que la hacen imposible de adivinar.
+  The URL is **ours** (Supabase Storage), not the provider's. It's persistent and doesn't expire. Same security model as fal.media, Cloudinary, or unsigned S3: the URL includes 2 UUIDs (`org_id` + `request_id`) making it unguessable.
 </Info>
 
-## Ejemplos
+## Examples
 
 <CodeGroup>
 
@@ -63,7 +63,7 @@ client = OpenAI(
 
 response = client.images.generate(
     model="fal/flux-1.1-pro",
-    prompt="Un astronauta meditando en una nube de tacos al pastor, estilo cinematográfico",
+    prompt="An astronaut meditating on a cloud of tacos al pastor, cinematic style",
     n=1,
     size="1024x1024",
 )
@@ -74,7 +74,7 @@ print(response.data[0].url)
 ```python GPT Image 1
 response = client.images.generate(
     model="openai/gpt-image-1",
-    prompt="Un astronauta meditando en una nube de tacos al pastor",
+    prompt="An astronaut meditating on a cloud of tacos al pastor",
     n=1,
     size="1024x1024",
     quality="hd",
@@ -84,7 +84,7 @@ response = client.images.generate(
 ```python Imagen 4
 response = client.images.generate(
     model="google/imagen-4",
-    prompt="Un astronauta meditando en una nube de tacos al pastor",
+    prompt="An astronaut meditating on a cloud of tacos al pastor",
     n=1,
 )
 ```
@@ -95,7 +95,7 @@ curl -X POST https://api.geekhub.mx/v1/images/generations \
   -H "Content-Type: application/json" \
   -d '{
     "model": "fal/flux-1.1-pro",
-    "prompt": "Un astronauta meditando en una nube de tacos al pastor",
+    "prompt": "An astronaut meditating on a cloud of tacos al pastor",
     "n": 1,
     "size": "1024x1024"
   }'
@@ -103,9 +103,9 @@ curl -X POST https://api.geekhub.mx/v1/images/generations \
 
 </CodeGroup>
 
-## Latencia esperada
+## Expected latency
 
-| Modelo | P50 | P95 |
+| Model | P50 | P95 |
 |--------|-----|-----|
 | DALL·E 3 | 8s | 20s |
 | GPT Image 1 | 15s | 45s |
@@ -117,14 +117,14 @@ curl -X POST https://api.geekhub.mx/v1/images/generations \
 | Ideogram V2 | 12s | 35s |
 | SD 3.5 Large | 10s | 30s |
 
-Si tu request tarda > 60s, asume que falló — manda otro.
+If your request takes > 60s, assume it failed — send another.
 
-## Costos
+## Costs
 
-Cada imagen se cobra al precio del modelo × 1.05 (markup) × FX MXN/USD. Ver [Modelos imágenes](/models/images).
+Each image is billed at the model price × 1.05 (markup) × FX MXN/USD. See [Image models](/en/models/images).
 
-Ejemplo: 1 imagen con Flux 1.1 Pro al FX de $20 MXN/USD:
+Example: 1 image with Flux 1.1 Pro at FX $20 MXN/USD:
 
 ```
-$0.040 × 1.05 × 20 = $0.84 MXN por imagen
+$0.040 × 1.05 × 20 = $0.84 MXN per image
 ```

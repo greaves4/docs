@@ -1,39 +1,39 @@
 ---
-title: "Modelos de imágenes"
-description: "9 modelos de generación de imágenes"
+title: "Image models"
+description: "9 image generation models"
 ---
 
-| ID | Provider | Precio/img | Strong suit |
+| ID | Provider | Price/img | Strong suit |
 |----|----------|------------|-------------|
-| `openai/gpt-image-1` | OpenAI | $0.19 | Razonamiento visual, máxima calidad |
-| `openai/dall-e-3` | OpenAI | $0.04 | Versátil, accesible |
-| `google/imagen-4` | Google | $0.04 | Mejor con texto en la imagen |
-| `xai/grok-2-image` | xAI | $0.07 | Estilo fotorrealista, sin filtros |
-| `fal/flux-1.1-pro` | fal.ai | $0.04 | Mejor open-weight balance |
+| `openai/gpt-image-1` | OpenAI | $0.19 | Visual reasoning, top quality |
+| `openai/dall-e-3` | OpenAI | $0.04 | Versatile, accessible |
+| `google/imagen-4` | Google | $0.04 | Best with text in the image |
+| `xai/grok-2-image` | xAI | $0.07 | Photorealistic, no filters |
+| `fal/flux-1.1-pro` | fal.ai | $0.04 | Best open-weight balance |
 | `fal/flux-1.1-pro-ultra` | fal.ai | $0.06 | Flux 4K |
-| `fal/recraft-v3` | fal.ai | $0.04 | Branding, tipografía, ilustración |
-| `fal/ideogram-v2` | fal.ai | $0.08 | Tipografía profesional |
+| `fal/recraft-v3` | fal.ai | $0.04 | Branding, typography, illustration |
+| `fal/ideogram-v2` | fal.ai | $0.08 | Professional typography |
 | `fal/sd-3.5-large` | fal.ai | $0.065 | SD 3.5 Large |
 
-## Cuándo usar cada uno
+## When to use each
 
-### Para hi-fi / marketing / launch
-**Flux 1.1 Pro Ultra** o **GPT Image 1**. Top de calidad.
+### For hi-fi / marketing / launch
+**Flux 1.1 Pro Ultra** or **GPT Image 1**. Top quality.
 
-### Para volumen / iterar prompts
-**DALL·E 3**, **Imagen 4** o **Flux 1.1 Pro**. $0.04/img, suficientemente bueno.
+### For volume / iterating prompts
+**DALL·E 3**, **Imagen 4**, or **Flux 1.1 Pro**. $0.04/img, good enough.
 
-### Para texto dentro de la imagen
-**Imagen 4** o **Ideogram V2**. Estos manejan tipografía mucho mejor que Flux/DALL·E.
+### For text inside the image
+**Imagen 4** or **Ideogram V2**. These handle typography much better than Flux/DALL·E.
 
-### Para mockups con identidad de marca
-**Recraft V3**. Te deja generar variantes consistentes con un estilo definido.
+### For mockups with brand identity
+**Recraft V3**. Lets you generate consistent variants in a defined style.
 
-### Para "estilo libre" / sin filtros estrictos
-**Grok 2 Image**. xAI tiene política de contenido más laxa.
+### For "free style" / less strict filters
+**Grok 2 Image**. xAI has a more lenient content policy.
 
-## Storage incluido
+## Built-in storage
 
-Cada imagen generada se persiste en **tu** Supabase Storage automáticamente. Las URLs duran indefinidamente (mientras tengas cuenta).
+Each generated image is persisted in **your** Supabase Storage automatically. URLs last indefinitely (while you have an account).
 
 Path: `https://supabase.geekhub.mx/storage/v1/object/public/generated-images/<org_id>/<request_id>/<i>.<ext>`

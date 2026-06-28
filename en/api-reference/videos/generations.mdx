@@ -1,28 +1,28 @@
 ---
 title: "POST /v1/videos/generations"
-description: "Crea un job de generación de video (async)"
+description: "Create a video generation job (async)"
 api: "POST https://api.geekhub.mx/v1/videos/generations"
 ---
 
 ## Request body
 
 <ParamField body="model" type="string" required>
-  El ID namespaced del modelo, ej. `fal/kling-2`. Ver [Modelos video](/models/videos).
+  The namespaced model ID, e.g. `fal/kling-2`. See [Video models](/en/models/videos).
 </ParamField>
 
 <ParamField body="prompt" type="string" required>
-  Descripción del video. Máximo 4000 caracteres.
+  Video description. Maximum 4000 characters.
 </ParamField>
 
 <ParamField body="duration" type="integer">
-  Duración en segundos. Si no la mandas, usamos el default del modelo. Cap por modelo (ver catálogo).
+  Duration in seconds. If you don't send it, we use the model default. Per-model cap (see catalog).
 </ParamField>
 
 <ParamField body="aspect_ratio" type="string">
-  Ratio del video. Ejemplos: `16:9`, `9:16`, `1:1`, `4:5`. Soporte depende del modelo.
+  Video ratio. Examples: `16:9`, `9:16`, `1:1`, `4:5`. Support depends on the model.
 </ParamField>
 
-## Response (inmediata, ~100ms)
+## Response (immediate, ~100ms)
 
 ```json
 {
@@ -30,7 +30,7 @@ api: "POST https://api.geekhub.mx/v1/videos/generations"
   "object": "video.job",
   "status": "processing",
   "model": "fal/kling-2",
-  "prompt": "un astronauta surfeando una ola gigante de salsa verde",
+  "prompt": "an astronaut surfing a giant wave of green salsa",
   "video_url": null,
   "duration": 5,
   "error": null,
@@ -40,35 +40,35 @@ api: "POST https://api.geekhub.mx/v1/videos/generations"
 ```
 
 <ResponseField name="id" type="string">
-  El job_id. Úsalo para polling.
+  The job_id. Use it for polling.
 </ResponseField>
 
 <ResponseField name="status" type="string">
-  Generalmente `processing`. Raro pero posible `failed` si la submission al provider explotó.
+  Usually `processing`. Rare but possible `failed` if the submission to the provider blew up.
 </ResponseField>
 
 <ResponseField name="model" type="string">
-  El model id que pediste.
+  The model id you requested.
 </ResponseField>
 
-## Ejemplos
+## Examples
 
 <CodeGroup>
 
 ```python Kling 2
 job = client.post("/videos/generations", body={
     "model": "fal/kling-2",
-    "prompt": "Un astronauta surfeando una ola gigante de salsa verde, cinematográfico",
+    "prompt": "An astronaut surfing a giant wave of green salsa, cinematic",
     "duration": 5,
     "aspect_ratio": "16:9",
 })
 print(job["id"])
 ```
 
-```python Veo 3.1 con audio
+```python Veo 3.1 with audio
 job = client.post("/videos/generations", body={
     "model": "google/veo-3.1",
-    "prompt": "Un colibrí bebiendo de una flor de cempasúchil al amanecer, foley naturalista",
+    "prompt": "A hummingbird drinking from a cempasúchil flower at dawn, naturalistic foley",
     "duration": 8,
 })
 ```
@@ -79,7 +79,7 @@ curl -X POST https://api.geekhub.mx/v1/videos/generations \
   -H "Content-Type: application/json" \
   -d '{
     "model": "fal/kling-2",
-    "prompt": "Un astronauta surfeando una ola gigante de salsa verde",
+    "prompt": "An astronaut surfing a giant wave of green salsa",
     "duration": 5,
     "aspect_ratio": "16:9"
   }'
@@ -87,18 +87,18 @@ curl -X POST https://api.geekhub.mx/v1/videos/generations \
 
 </CodeGroup>
 
-## ⚠️ Sobre el costo
+## ⚠️ About cost
 
-Al crear el job **NO se cobra todavía**. El cobro ocurre cuando el job transita a `completed`. Si falla, no hay cargo.
+When you create the job **you are NOT charged yet**. The charge happens when the job transitions to `completed`. If it fails, there's no charge.
 
-Cap de seguridad: tu saldo se valida al **submit** — si está ≤ 0 te devolvemos `402 insufficient_balance` antes de crear el job.
+Safety cap: your balance is validated at **submit** — if it's ≤ 0 we return `402 insufficient_balance` before creating the job.
 
 <Tip>
-  Antes de mandar muchos jobs en paralelo, calcula tu cost máximo: `duration × precio_modelo × markup × FX`. Por ejemplo 10 videos Kling 5s = `10 × 5 × $0.04 × 1.05 × 20 = $42 MXN`.
+  Before sending many jobs in parallel, compute your max cost: `duration × model_price × markup × FX`. Example: 10 Kling 5s videos = `10 × 5 × $0.04 × 1.05 × 20 = $42 MXN`.
 </Tip>
 
-## Siguiente paso
+## Next step
 
-<Card title="GET /v1/videos/{id}" icon="rotate" href="/api-reference/videos/poll">
-  Polea el estado del job hasta que llegue a `completed`.
+<Card title="GET /v1/videos/{id}" icon="rotate" href="/en/api-reference/videos/poll">
+  Poll the job status until it reaches `completed`.
 </Card>

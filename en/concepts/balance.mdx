@@ -1,61 +1,61 @@
 ---
-title: "Saldo"
-description: "Cómo funciona el saldo, descuentos por request y alertas"
+title: "Balance"
+description: "How the balance works, per-request charges, and alerts"
 ---
 
-Tu **saldo** es un balance en MXN. Lo recargas tú (o lo recibes como bono al registrarte). Cada llamada al gateway descuenta su costo del saldo.
+Your **balance** is a credit in MXN. You top it up (or receive it as a signup bonus). Each call to the gateway deducts its cost from the balance.
 
-## Cómo se calcula el saldo
+## How the balance is computed
 
 ```
-Saldo = SUM(amount_mxn) en todas tus credit_transactions
+Balance = SUM(amount_mxn) across all your credit_transactions
 ```
 
-Las transacciones tienen tipos:
+Transactions have types:
 
-| Tipo | Signo | Cuándo |
+| Type | Sign | When |
 |------|-------|--------|
-| `bonus` | `+` | Al registrarte ($50 MXN gratis) |
-| `recharge` | `+` | Cuando completas una recarga Stripe |
-| `consumption` | `-` | Por cada llamada exitosa al gateway |
-| `refund` | `+` | Reembolso manual (próximo) |
-| `adjustment` | `±` | Ajustes manuales del equipo (raros) |
+| `bonus` | `+` | At signup ($50 MXN free) |
+| `recharge` | `+` | When you complete a Stripe recharge |
+| `consumption` | `-` | For each successful gateway call |
+| `refund` | `+` | Manual refund (coming soon) |
+| `adjustment` | `±` | Manual adjustments by our team (rare) |
 
-## Visibilidad
+## Visibility
 
-- **Tiempo real** en el dashboard ([app.geekhub.mx](https://app.geekhub.mx/dashboard))
-- **Endpoint API** _(próximo Sprint)_: `GET /v1/credits` regresará tu saldo actual
-- **Headers de respuesta** _(próximo Sprint)_: cada response incluirá `x-geekhub-balance-mxn`
+- **Real-time** in the dashboard ([app.geekhub.mx](https://app.geekhub.mx/dashboard))
+- **API endpoint** _(coming soon)_: `GET /v1/credits` will return your current balance
+- **Response headers** _(coming soon)_: each response will include `x-geekhub-balance-mxn`
 
-## Threshold y alertas
+## Threshold and alerts
 
-| Saldo | Comportamiento |
+| Balance | Behavior |
 |-------|----------------|
-| `> $20 MXN` | Servicio normal |
-| `> $0 y < $20` | Servicio normal + decision card "Saldo bajo" en dashboard |
-| `≤ $0` | Gateway responde **`402 insufficient_balance`** hasta que recargues |
+| `> $20 MXN` | Normal service |
+| `> $0 and < $20` | Normal service + "Low balance" card in dashboard |
+| `≤ $0` | Gateway responds **`402 insufficient_balance`** until you top up |
 
 <Tip>
-  Configura un cron en tu lado que cheque tu saldo (cuando habilitemos `GET /v1/credits`) y dispare alerta cuando esté < 1 día de uso típico.
+  Set up a cron on your end that checks your balance (when we enable `GET /v1/credits`) and fires an alert when you're below 1 day of typical usage.
 </Tip>
 
-## Detalle de cada cobro
+## Per-request detail
 
-En [/dashboard/usage](https://app.geekhub.mx/dashboard/usage) tienes el log completo: cada request muestra:
+In [/dashboard/usage](https://app.geekhub.mx/dashboard/usage) you have the full log; each request shows:
 
-- Modelo usado
-- Tokens (in / out) o imágenes / segundos
-- Costo MXN exacto
-- Latencia P95
-- Estado (200 / 4xx / 5xx)
+- Model used
+- Tokens (in / out) or images / seconds
+- Exact MXN cost
+- P95 latency
+- Status (200 / 4xx / 5xx)
 - Timestamp
 
-Y en [/dashboard/billing](https://app.geekhub.mx/dashboard/billing) tienes el detalle por movimiento (recargas, bonos, consumos agregados).
+And in [/dashboard/billing](https://app.geekhub.mx/dashboard/billing) you have the detail per movement (recharges, bonuses, aggregated consumption).
 
 ## Race conditions
 
-El descuento del saldo es **atómico a nivel transacción Postgres**: el trigger `consume_credit_on_request()` usa `pg_advisory_xact_lock` por org para serializar consumos concurrentes. Aunque hagas 100 requests paralelos, el `balance_after` siempre refleja el orden correcto.
+The balance deduction is **atomic at the Postgres transaction level**: the `consume_credit_on_request()` trigger uses `pg_advisory_xact_lock` per org to serialize concurrent consumption. Even with 100 parallel requests, `balance_after` always reflects the correct order.
 
 <Info>
-  **Cero double-charging.** Cada request fallido con `cost_mxn > 0` no genera `consumption` (el trigger lo filtra).
+  **Zero double-charging.** Each failed request with `cost_mxn > 0` does not generate a `consumption` (the trigger filters it).
 </Info>

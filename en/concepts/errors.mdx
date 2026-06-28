@@ -1,9 +1,9 @@
 ---
-title: "Errores"
-description: "Catálogo de errores y cómo manejarlos"
+title: "Errors"
+description: "Error catalog and how to handle them"
 ---
 
-Todas las respuestas de error siguen el **formato estándar de OpenAI**:
+All error responses follow the **standard OpenAI format**:
 
 ```json
 {
@@ -16,33 +16,33 @@ Todas las respuestas de error siguen el **formato estándar de OpenAI**:
 }
 ```
 
-El `request_id` es trazable de extremo a extremo. Si reportas un bug, inclúyelo — podemos buscar tu request en logs.
+The `request_id` is end-to-end traceable. If you report a bug, include it — we can find your request in the logs.
 
-## Catálogo de errores
+## Error catalog
 
-| HTTP | `code` | Qué hacer |
+| HTTP | `code` | What to do |
 |------|--------|-----------|
-| `400` | `invalid_request_error` | Revisa el body (Zod te dirá el campo exacto en `message`) |
-| `401` | `missing_api_key` | Manda header `Authorization: Bearer ghub_sk_...` |
-| `401` | `invalid_api_key` | Verifica que la key sea correcta y no esté revocada |
-| `401` | `key_revoked` | Genera una nueva en `/dashboard/keys` |
-| `402` | `insufficient_balance` | Recarga en `/dashboard/billing/recharge` |
-| `404` | `model_not_found` | Llama `GET /v1/models` para ver el catálogo válido |
-| `429` | `rate_limit_exceeded` | Reintenta con exponential backoff (próximo Sprint) |
-| `500` | `internal_error` | Reintenta. Si persiste, abre ticket con `request_id` |
-| `502` | `provider_unavailable` | El proveedor (Anthropic/OpenAI/etc) está caído o tu prompt no es aceptable. Reintenta o cambia modelo |
+| `400` | `invalid_request_error` | Review the body (Zod tells you the exact field in `message`) |
+| `401` | `missing_api_key` | Send `Authorization: Bearer ghub_sk_...` header |
+| `401` | `invalid_api_key` | Verify the key is correct and not revoked |
+| `401` | `key_revoked` | Generate a new one at `/dashboard/keys` |
+| `402` | `insufficient_balance` | Top up at `/dashboard/billing/recharge` |
+| `404` | `model_not_found` | Call `GET /v1/models` to see the valid catalog |
+| `429` | `rate_limit_exceeded` | Retry with exponential backoff (coming soon) |
+| `500` | `internal_error` | Retry. If it persists, open a ticket with `request_id` |
+| `502` | `provider_unavailable` | The provider (Anthropic/OpenAI/etc) is down or your prompt isn't acceptable. Retry or switch model |
 
-## Errores específicos del proveedor
+## Provider-specific errors
 
-Si el `code` es `provider_unavailable`, el `message` viene del proveedor original tal cual. Ejemplos comunes:
+If `code` is `provider_unavailable`, the `message` comes from the original provider as-is. Common examples:
 
 ```
-404 The model 'gpt-4o' does not exist            ← Tu cuenta no tiene acceso
-content_filter triggered                          ← Anthropic / OpenAI bloquearon el prompt
-rate limit reached for model xxx                 ← Sobrecarga temporal del proveedor
+404 The model 'gpt-4o' does not exist            ← Your account doesn't have access
+content_filter triggered                          ← Anthropic / OpenAI blocked the prompt
+rate limit reached for model xxx                 ← Temporary provider overload
 ```
 
-## Retry recomendado
+## Recommended retry
 
 ```python
 import time
@@ -64,10 +64,10 @@ def call_with_retry(client, model, messages, max_retries=3):
 
 ## Streaming errors
 
-Si pides `stream: true` y algo falla **después** de que arranca el stream, recibes un mensaje SSE final con el shape de error:
+If you request `stream: true` and something fails **after** the stream starts, you receive a final SSE message with the error shape:
 
 ```
 data: {"error":{"message":"...","type":"provider_unavailable","code":"provider_unavailable","request_id":"req_xxx"}}
 ```
 
-Tu parser debe revisar si la línea contiene `error` además de `[DONE]`.
+Your parser should check whether the line contains `error` in addition to `[DONE]`.

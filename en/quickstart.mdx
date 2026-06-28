@@ -1,27 +1,27 @@
 ---
 title: "Quickstart"
-description: "Tu primera llamada al gateway en menos de 5 minutos"
+description: "Your first call to the gateway in under 5 minutes"
 ---
 
-## 1 · Crea tu cuenta
+## 1 · Create your account
 
-Ve a [app.geekhub.mx/signup](https://app.geekhub.mx/signup) y regístrate. Te damos **$50 MXN de crédito gratis** para que pruebes — sin tarjeta, sin compromisos.
+Go to [app.geekhub.mx/signup](https://app.geekhub.mx/signup) and sign up. We give you **$50 MXN of free credit** to test — no card, no commitments.
 
-## 2 · Genera tu API key
+## 2 · Generate your API key
 
-En el dashboard, ve a **API Keys → Nueva API key**.
+In the dashboard, go to **API Keys → New API key**.
 
 <Warning>
-  La key se muestra **una sola vez**. Cópiala a tu password manager antes de cerrar el modal.
+  The key is shown **only once**. Copy it to your password manager before closing the modal.
 </Warning>
 
-El formato es:
+The format is:
 
 ```
 ghub_sk_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-## 3 · Tu primera llamada
+## 3 · Your first call
 
 <CodeGroup>
 
@@ -30,12 +30,12 @@ from openai import OpenAI
 
 client = OpenAI(
     base_url="https://api.geekhub.mx/v1",
-    api_key="ghub_sk_live_TU_KEY",
+    api_key="ghub_sk_live_YOUR_KEY",
 )
 
 response = client.chat.completions.create(
     model="anthropic/claude-haiku-4-5",
-    messages=[{"role": "user", "content": "Hola, en una sola línea"}],
+    messages=[{"role": "user", "content": "Hi, in one line"}],
 )
 
 print(response.choices[0].message.content)
@@ -46,12 +46,12 @@ import OpenAI from "openai";
 
 const client = new OpenAI({
   baseURL: "https://api.geekhub.mx/v1",
-  apiKey: "ghub_sk_live_TU_KEY",
+  apiKey: "ghub_sk_live_YOUR_KEY",
 });
 
 const response = await client.chat.completions.create({
   model: "anthropic/claude-haiku-4-5",
-  messages: [{ role: "user", content: "Hola, en una sola línea" }],
+  messages: [{ role: "user", content: "Hi, in one line" }],
 });
 
 console.log(response.choices[0].message.content);
@@ -59,17 +59,17 @@ console.log(response.choices[0].message.content);
 
 ```bash curl
 curl -X POST https://api.geekhub.mx/v1/chat/completions \
-  -H "Authorization: Bearer ghub_sk_live_TU_KEY" \
+  -H "Authorization: Bearer ghub_sk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "model": "anthropic/claude-haiku-4-5",
-    "messages": [{"role":"user","content":"Hola, en una sola línea"}]
+    "messages": [{"role":"user","content":"Hi, in one line"}]
   }'
 ```
 
 </CodeGroup>
 
-Respuesta:
+Response:
 
 ```json
 {
@@ -78,16 +78,16 @@ Respuesta:
   "model": "anthropic/claude-haiku-4-5",
   "choices": [{
     "index": 0,
-    "message": {"role":"assistant","content":"¡Hola! ¿En qué puedo ayudarte?"},
+    "message": {"role":"assistant","content":"Hi! How can I help?"},
     "finish_reason": "stop"
   }],
   "usage": {"prompt_tokens": 10, "completion_tokens": 8, "total_tokens": 18}
 }
 ```
 
-## 4 · Cambia de modelo
+## 4 · Switch models
 
-Solo cambia el campo `model`. **El mismo SDK** funciona con todos:
+Just change the `model` field. **The same SDK** works with all of them:
 
 ```python
 # OpenAI GPT-5
@@ -106,12 +106,12 @@ model="moonshot/kimi-k2"
 model="xai/grok-4"
 ```
 
-Ver el [catálogo completo](/models) con precios y capacidades.
+See the [full catalog](/en/models/index) with pricing and capabilities.
 
-## 5 · Cuando se acabe el bono
+## 5 · When your bonus runs out
 
-Recarga desde [app.geekhub.mx/dashboard/billing](https://app.geekhub.mx/dashboard/billing). Aceptamos tarjeta vía Stripe; al cierre del cobro te llega tu **CFDI 4.0** automático a tu RFC.
+Top up from [app.geekhub.mx/dashboard/billing](https://app.geekhub.mx/dashboard/billing). We accept cards via Stripe; at checkout you receive your **CFDI 4.0** automatically to your RFC.
 
-<Card title="¿Sin RFC?" icon="receipt" href="/concepts/billing">
-  Tu CFDI se emite a Público en General (XAXX010101000). No te bloqueamos para recargar.
+<Card title="No RFC?" icon="receipt" href="/en/concepts/billing">
+  Your CFDI is issued to "Público en General" (XAXX010101000). We never block you from topping up.
 </Card>

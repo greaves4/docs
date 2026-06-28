@@ -1,13 +1,13 @@
 ---
 title: "Chat · overview"
-description: "Endpoint principal — 100% compatible con OpenAI"
+description: "Main endpoint — 100% OpenAI-compatible"
 ---
 
-El endpoint `POST /v1/chat/completions` es **100% compatible con el SDK oficial de OpenAI** para Python y Node.js. Solo cambias `base_url` y `api_key`.
+The `POST /v1/chat/completions` endpoint is **100% compatible with the official OpenAI SDK** for Python and Node.js. Just change `base_url` and `api_key`.
 
-## ¿Qué modelos puedo usar?
+## Which models can I use?
 
-17 modelos de chat de 7 proveedores. Todos namespaced como `<provider>/<model>`:
+17 chat models across 7 providers. All namespaced as `<provider>/<model>`:
 
 ```
 anthropic/claude-opus-4-8
@@ -28,25 +28,25 @@ xai/grok-3
 xai/grok-3-mini
 ```
 
-Ver [Modelos chat](/models/chat) para context length, precios y capacidades de cada uno.
+See [Chat models](/en/models/chat) for context length, pricing, and capabilities of each one.
 
-## Funcionalidades
+## Features
 
-| Feature | Soportado |
+| Feature | Supported |
 |---------|-----------|
-| Mensajes `system`, `user`, `assistant` | ✅ |
-| Streaming SSE (`stream: true`) | ✅ |
+| `system`, `user`, `assistant` messages | ✅ |
+| SSE streaming (`stream: true`) | ✅ |
 | `temperature`, `top_p`, `max_tokens`, `stop` | ✅ |
-| Multi-turn (conversación) | ✅ |
-| Function calling / tool use | _Próximo_ |
-| Vision (image input) | _Próximo_ |
-| JSON mode | _Próximo_ |
+| Multi-turn (conversation) | ✅ |
+| Function calling / tool use | _Coming soon_ |
+| Vision (image input) | _Coming soon_ |
+| JSON mode | _Coming soon_ |
 
 ## Routing
 
-Detrás de cada model id, llamamos directo al proveedor con su SDK oficial:
+Behind each model id, we call the provider directly with their official SDK:
 
-| Provider | SDK que usamos |
+| Provider | SDK we use |
 |----------|----------------|
 | Anthropic | `@anthropic-ai/sdk` |
 | Google | `@google/genai` |
@@ -55,10 +55,10 @@ Detrás de cada model id, llamamos directo al proveedor con su SDK oficial:
 | Moonshot | `openai` (OpenAI-compatible) |
 | xAI | `openai` (OpenAI-compatible) |
 
-Esto significa que los **mismos errores y comportamientos del proveedor original** llegan tal cual a ti. Si OpenAI tiene rate limit, lo verás como `provider_unavailable` con el mensaje original.
+This means the **same errors and behaviors from the original provider** reach you as-is. If OpenAI has a rate limit, you'll see it as `provider_unavailable` with the original message.
 
-## Próximos pasos
+## Next steps
 
-<Card title="POST /v1/chat/completions" icon="code" href="/api-reference/chat/completions">
-  Referencia completa del endpoint con todos los parámetros.
+<Card title="POST /v1/chat/completions" icon="code" href="/en/api-reference/chat/completions">
+  Full endpoint reference with all parameters.
 </Card>

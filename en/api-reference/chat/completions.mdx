@@ -1,59 +1,59 @@
 ---
 title: "POST /v1/chat/completions"
-description: "Generación de respuestas de chat con cualquier modelo"
+description: "Chat response generation with any model"
 api: "POST https://api.geekhub.mx/v1/chat/completions"
 ---
 
 ## Request body
 
 <ParamField body="model" type="string" required>
-  El ID namespaced del modelo, ej. `anthropic/claude-sonnet-4-6`. Ver [Modelos chat](/models/chat).
+  The namespaced model ID, e.g. `anthropic/claude-sonnet-4-6`. See [Chat models](/en/models/chat).
 </ParamField>
 
 <ParamField body="messages" type="array" required>
-  Array de mensajes en la conversación.
+  Conversation messages.
 
-  <Expandable title="Estructura de cada mensaje">
+  <Expandable title="Each message structure">
     <ParamField body="role" type="'system' | 'user' | 'assistant' | 'tool'" required>
-      Rol del mensaje. `system` define el comportamiento, `user` es el humano, `assistant` es el modelo.
+      Message role. `system` defines behavior, `user` is the human, `assistant` is the model.
     </ParamField>
     <ParamField body="content" type="string" required>
-      Contenido del mensaje.
+      Message content.
     </ParamField>
     <ParamField body="name" type="string">
-      Identificador opcional del speaker.
+      Optional speaker identifier.
     </ParamField>
   </Expandable>
 </ParamField>
 
-<ParamField body="temperature" type="number" default="varía por modelo">
-  Entre 0 y 2. Más alto = más creativo, más bajo = más determinista.
+<ParamField body="temperature" type="number" default="varies by model">
+  Between 0 and 2. Higher = more creative, lower = more deterministic.
 </ParamField>
 
 <ParamField body="top_p" type="number">
-  Entre 0 y 1. Nucleus sampling. Alternativa a `temperature`.
+  Between 0 and 1. Nucleus sampling. Alternative to `temperature`.
 </ParamField>
 
 <ParamField body="max_tokens" type="integer">
-  Máximo de tokens a generar. Default varía por modelo.
+  Maximum tokens to generate. Default varies by model.
 </ParamField>
 
 <ParamField body="stream" type="boolean" default="false">
-  Si `true`, responde con Server-Sent Events. Ver sección Streaming abajo.
+  If `true`, responds with Server-Sent Events. See Streaming section below.
 </ParamField>
 
 <ParamField body="stop" type="string | string[]">
-  Sequencias que terminan la generación.
+  Sequences that end generation.
 </ParamField>
 
 ## Response (non-streaming)
 
 <ResponseField name="id" type="string">
-  Tu `request_id` (formato `req_<24hex>`). Útil para tracing.
+  Your `request_id` (format `req_<24hex>`). Useful for tracing.
 </ResponseField>
 
 <ResponseField name="object" type="string">
-  Siempre `"chat.completion"`.
+  Always `"chat.completion"`.
 </ResponseField>
 
 <ResponseField name="created" type="integer">
@@ -61,16 +61,16 @@ api: "POST https://api.geekhub.mx/v1/chat/completions"
 </ResponseField>
 
 <ResponseField name="model" type="string">
-  El model id namespaced (e.g. `anthropic/claude-sonnet-4-6`).
+  The namespaced model id (e.g. `anthropic/claude-sonnet-4-6`).
 </ResponseField>
 
 <ResponseField name="choices" type="array">
-  Array con un solo elemento (no soportamos `n > 1` todavía).
+  Array with a single element (`n > 1` not supported yet).
 
   <Expandable title="choice">
     <ResponseField name="index" type="integer">0</ResponseField>
     <ResponseField name="message.role" type="string">`assistant`</ResponseField>
-    <ResponseField name="message.content" type="string">Texto generado</ResponseField>
+    <ResponseField name="message.content" type="string">Generated text</ResponseField>
     <ResponseField name="finish_reason" type="string">
       `stop` | `length` | `content_filter` | `tool_calls`
     </ResponseField>
@@ -78,7 +78,7 @@ api: "POST https://api.geekhub.mx/v1/chat/completions"
 </ResponseField>
 
 <ResponseField name="usage" type="object">
-  Tokens consumidos. Se cobran al cierre.
+  Tokens consumed. Charged at request completion.
 
   <Expandable title="usage">
     <ResponseField name="prompt_tokens" type="integer" />
@@ -89,23 +89,23 @@ api: "POST https://api.geekhub.mx/v1/chat/completions"
 
 ## Streaming
 
-Para responses en tiempo real, manda `"stream": true`. Recibirás Server-Sent Events:
+For real-time responses, send `"stream": true`. You'll receive Server-Sent Events:
 
 ```
 data: {"id":"req_xxx","object":"chat.completion.chunk","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
 
-data: {"id":"req_xxx","object":"chat.completion.chunk","choices":[{"index":0,"delta":{"content":"Hola"},"finish_reason":null}]}
+data: {"id":"req_xxx","object":"chat.completion.chunk","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
 
-data: {"id":"req_xxx","object":"chat.completion.chunk","choices":[{"index":0,"delta":{"content":" mundo"},"finish_reason":null}]}
+data: {"id":"req_xxx","object":"chat.completion.chunk","choices":[{"index":0,"delta":{"content":" world"},"finish_reason":null}]}
 
 data: {"id":"req_xxx","object":"chat.completion.chunk","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
 
 data: [DONE]
 ```
 
-Cada `data:` es un JSON con un `delta.content` que es **el siguiente fragmento** del texto (puede ser una palabra, una sílaba, hasta un solo caracter).
+Each `data:` is a JSON with a `delta.content` that is **the next text fragment** (can be a word, a syllable, or even a single character).
 
-### Parser TypeScript
+### TypeScript parser
 
 ```typescript
 const res = await fetch("https://api.geekhub.mx/v1/chat/completions", {
@@ -116,7 +116,7 @@ const res = await fetch("https://api.geekhub.mx/v1/chat/completions", {
   },
   body: JSON.stringify({
     model: "anthropic/claude-haiku-4-5",
-    messages: [{ role: "user", content: "Cuenta hasta 5" }],
+    messages: [{ role: "user", content: "Count to 5" }],
     stream: true,
   }),
 });
@@ -142,7 +142,7 @@ while (true) {
 }
 ```
 
-## Ejemplos por proveedor
+## Examples per provider
 
 <CodeGroup>
 
@@ -150,8 +150,8 @@ while (true) {
 response = client.chat.completions.create(
     model="anthropic/claude-sonnet-4-6",
     messages=[
-        {"role": "system", "content": "Eres un asistente conciso."},
-        {"role": "user", "content": "¿Capital de México?"}
+        {"role": "system", "content": "You are a concise assistant."},
+        {"role": "user", "content": "Capital of Mexico?"}
     ],
     max_tokens=200,
 )
@@ -160,14 +160,14 @@ response = client.chat.completions.create(
 ```python GPT-5
 response = client.chat.completions.create(
     model="openai/gpt-5",
-    messages=[{"role": "user", "content": "Explica QPS en una línea"}],
+    messages=[{"role": "user", "content": "Explain QPS in one line"}],
 )
 ```
 
 ```python Gemini 2.5 Pro
 response = client.chat.completions.create(
     model="google/gemini-2.5-pro",
-    messages=[{"role": "user", "content": "Hola"}],
+    messages=[{"role": "user", "content": "Hi"}],
     temperature=0.5,
 )
 ```
@@ -175,17 +175,17 @@ response = client.chat.completions.create(
 ```python DeepSeek Reasoner
 response = client.chat.completions.create(
     model="deepseek/deepseek-reasoner",
-    messages=[{"role": "user", "content": "Resuelve: 23 * 17 paso a paso"}],
+    messages=[{"role": "user", "content": "Solve: 23 * 17 step by step"}],
 )
 ```
 
 </CodeGroup>
 
-## Errores comunes
+## Common errors
 
-Ver [Errores](/concepts/errors) para el catálogo completo. Los más frecuentes en chat:
+See [Errors](/en/concepts/errors) for the full catalog. The most frequent in chat:
 
-- `400 invalid_request_error` — body mal formado (Zod te dice el campo en `message`)
-- `402 insufficient_balance` — sin saldo
-- `404 model_not_found` — model id inválido (probablemente le faltó namespace)
-- `502 provider_unavailable` — el provider rebotó (a veces es prompt rechazado)
+- `400 invalid_request_error` — malformed body (Zod tells you the field in `message`)
+- `402 insufficient_balance` — no balance
+- `404 model_not_found` — invalid model id (probably missing namespace)
+- `502 provider_unavailable` — provider bounced (sometimes it's a rejected prompt)
