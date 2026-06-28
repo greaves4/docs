@@ -1,0 +1,79 @@
+---
+title: "Guardrails"
+description: "Reusable policies assigned by owner/admin to users or API keys. Budget, allowed models, ZDR, PII, content patterns."
+icon: "lock"
+---
+
+A guardrail is a reusable policy that an owner or admin assigns to a **user** or an **API key**. Defines budget, allowed models and providers, ZDR per group, prompt injection and PII detection, and custom content patterns.
+
+Managed from [`/dashboard/guardrails`](https://app.geekhub.mx/dashboard/guardrails) or via the REST API.
+
+## Components
+
+- **Budget** — USD limit per period (daily/weekly/monthly). When the period spend hits the limit, the guardrail blocks until the next reset.
+- **Allowed models** — allowlist by `model id`. Empty = all.
+- **Allowed providers** — allowlist by provider id (`openai`, `anthropic`, ...).
+- **ZDR per group** — independent toggle per group. Same concept as the org-level setting but applied per guardrail.
+- **Prompt injection detection** — regex for common patterns (`ignore previous instructions`, `reveal system prompt`).
+- **PII detection** — `off` / `redact` / `block`. Detects email, phone, RFC, CURP, credit cards, IPv4.
+- **Custom patterns** — array of `{ name, pattern, action }`. Case-insensitive regex, action `redact` or `block`.
+
+## Combining multiple guardrails
+
+When several apply to the same request:
+
+| Dimension | Rule | Example |
+|---|---|---|
+| Allowed models | **INTERSECTION** | A=[gpt5,sonnet], B=[sonnet,opus] → [sonnet] |
+| Allowed providers | **INTERSECTION** | A=[openai,anthropic], B=[anthropic,google] → [anthropic] |
+| ZDR (per group) | **UNION** | If A requires ZDR for openai, all openai requests require it |
+| Budget | **INDEPENDENT** | Any guardrail with budget-at-limit blocks |
+| Custom patterns + PII | UNION; `block` > `redact` | A=redact email, B=block email → block |
+| Prompt injection | **OR** | If any enables it, on |
+
+## Block format
+
+```json
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "type": "guardrail_blocked",
+    "message": "Model \"openai/gpt-5\" is not in the allowed-models list for your guardrails."
+  }
+}
+```
+
+<Note>
+The message describes the high-level reason; it does not expose internal config or individual guardrail names (prevents policy doxing to users without admin permission).
+</Note>
+
+## REST API
+
+```bash
+GET    /api/guardrails           # list for current org
+POST   /api/guardrails           # create
+GET    /api/guardrails/:id       # detail
+PUT    /api/guardrails/:id       # full update
+DELETE /api/guardrails/:id       # delete (cascades bindings)
+```
+
+### Example creation
+
+```bash
+curl -X POST https://app.geekhub.mx/api/guardrails \
+  -H "Content-Type: application/json" \
+  --cookie "ghub_session=..." \
+  -d '{
+    "name": "Support team",
+    "budgetUsd": 50,
+    "budgetPeriod": "monthly",
+    "allowedProviders": ["openai","anthropic"],
+    "zdrAnthropic": true,
+    "piiDetection": "redact",
+    "promptInjectionDetection": true,
+    "customPatterns": [
+      { "name": "no_secrets", "pattern": "(api_key|password)", "action": "block" }
+    ]
+  }'
+```

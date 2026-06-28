@@ -19,6 +19,15 @@ Una sola llave te abre acceso a más de **30 modelos** de los proveedores más r
   </Card>
 </CardGroup>
 
+<CardGroup cols={2}>
+  <Card title="Text-to-Speech" icon="audio-lines" href="/features/tts">
+    TTS-1, TTS-1-HD, GPT-4o mini TTS · streaming, 6 voces, 6 formatos
+  </Card>
+  <Card title="Zero Data Retention" icon="shield-check" href="/features/zdr">
+    Registro de endpoints ZDR verificados. Per-request, per-org o per-guardrail.
+  </Card>
+</CardGroup>
+
 ## Por qué Geek Hub
 
 <AccordionGroup>
@@ -52,6 +61,7 @@ POST /v1/chat/completions       Chat con cualquier modelo
 POST /v1/images/generations     Generación de imágenes
 POST /v1/videos/generations     Generación de video (async)
 GET  /v1/videos/{id}            Estado de un job de video
+POST /v1/audio/speech           Text-to-Speech (streaming)
 GET  /v1/models                 Catálogo completo
 GET  /health                    Health check (público)
 ```

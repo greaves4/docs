@@ -1,0 +1,87 @@
+---
+title: "Text-to-Speech (TTS)"
+description: "Audio synthesis from text. /v1/audio/speech endpoint compatible with the OpenAI SDK. Real-time streaming, 6 voices, 6 formats."
+icon: "audio-lines"
+---
+
+Endpoint `/v1/audio/speech` is OpenAI-SDK compatible: same body shape, same response shape (binary audio with `Content-Type` per format). Supports full or streaming responses and respects org-level ZDR flags.
+
+## Syntax
+
+```bash
+curl -X POST https://api.geekhub.mx/v1/audio/speech \
+  -H "Authorization: Bearer ghub_sk_live_YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -o speech.mp3 \
+  -d '{
+    "model": "openai/tts-1",
+    "input": "Hello, this is a voice synthesis test.",
+    "voice": "alloy",
+    "response_format": "mp3",
+    "speed": 1.0
+  }'
+```
+
+Response is **binary audio directly** (not JSON). `Content-Type` indicates the format.
+
+## Output formats
+
+| `response_format` | Content-Type | When to use |
+|---|---|---|
+| `mp3` (default) | `audio/mpeg` | Compatible with all browsers and players |
+| `opus` | `audio/opus` | Low-latency bidirectional streaming (WebRTC) |
+| `wav` | `audio/wav` | Post-processing (ASR, mixing). Lossless |
+| `pcm` | `audio/L16` | No container, custom engine integration |
+| `aac` | `audio/aac` | Native iOS / Apple devices |
+| `flac` | `audio/flac` | Lossless, compressed. Archival |
+
+## Real-time streaming
+
+Pass `stream: true` to receive audio in chunks as the model generates it (lower perceptual latency):
+
+```bash
+curl -N -X POST https://api.geekhub.mx/v1/audio/speech \
+  -H "Authorization: Bearer ghub_sk_live_YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/tts-1",
+    "input": "Text to play while it generates...",
+    "voice": "nova",
+    "response_format": "opus",
+    "stream": true
+  }' > stream.opus
+```
+
+## Tone instructions (gpt-4o-mini-tts)
+
+The `openai/gpt-4o-mini-tts` model accepts an `instructions` field with style prompting:
+
+```json
+{
+  "model": "openai/gpt-4o-mini-tts",
+  "input": "Welcome to Geek Hub.",
+  "voice": "verse",
+  "response_format": "mp3",
+  "instructions": "Speak with a warm, professional tone, paced and clear."
+}
+```
+
+## Available models
+
+| Model ID | Voices | Price | ZDR |
+|---|---|---|---|
+| `openai/tts-1` | alloy, echo, fable, onyx, nova, shimmer | $15 / 1M chars | ✓ |
+| `openai/tts-1-hd` | alloy, echo, fable, onyx, nova, shimmer | $30 / 1M chars | ✓ |
+| `openai/gpt-4o-mini-tts` | alloy, echo, fable, onyx, nova, shimmer, verse | $12 / 1M chars | ✓ |
+
+## Pricing structure
+
+TTS models are charged per **characters of synthesized text**, not tokens or seconds. This mirrors provider pricing and makes cost predictable: 1000 characters ≈ 150 words regardless of audio duration.
+
+Geek Hub applies the standard +5% markup.
+
+## ZDR pre-flight
+
+If your org requires ZDR for the TTS model's group, or if the request includes `zdr: true`, the gateway verifies before processing. Unverified → HTTP 422 with alternative models.
+
+See [Zero Data Retention](/en/features/zdr).

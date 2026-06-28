@@ -1,0 +1,94 @@
+---
+title: "Model Fallbacks"
+description: "Pass an ordered list of models. If the first fails on the provider's side, the next one answers — your app never notices."
+icon: "git-fork"
+---
+
+Instead of a single model, pass an **ordered list** of candidates. If the first fails on the provider side, Geek Hub automatically retries with the next, without returning an error to the client. The response indicates which model finally answered and the cost is calculated against that one.
+
+## Syntax
+
+`model` accepts a string (1 model) or an array (1 to 8 ordered candidates):
+
+```bash
+curl -X POST https://api.geekhub.mx/v1/chat/completions \
+  -H "Authorization: Bearer ghub_sk_live_YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": [
+      "openai/gpt-5",
+      "anthropic/claude-sonnet-4-6",
+      "google/gemini-2.5-flash"
+    ],
+    "messages": [{"role":"user","content":"Hi"}]
+  }'
+```
+
+## When fallback triggers
+
+| Case | Class | Fallback |
+|---|---|---|
+| HTTP 429 rate limit | provider | ✅ Yes |
+| HTTP 500/502/503 provider down | provider | ✅ Yes |
+| HTTP 408/504 timeout | provider | ✅ Yes |
+| Network reset / connection refused | provider | ✅ Yes |
+| Context window exceeded | provider | ✅ Yes |
+| Content policy rejected the prompt | provider | ✅ Yes |
+| HTTP 401/403 invalid auth | user | ❌ No |
+| HTTP 400 malformed request | user | ❌ No |
+| HTTP 402 insufficient balance | user | ❌ No |
+| Unknown model | user | ❌ No |
+
+## Pre-flight skip
+
+If a candidate doesn't support a required capability (`zdr: true`, `response_format`) or is blocked by the org's ZDR config, it gets **skipped** rather than failing. Reasons appear in `skipped`:
+
+- `zdr_not_verified` — no verified ZDR policy
+- `zdr_org_required` — org requires ZDR and candidate isn't verified
+- `structured_outputs_not_supported` — no structured outputs support
+- `model_not_found`, `no_adapter` — catalog or configuration
+
+## Successful response
+
+```json
+{
+  "id": "req_...",
+  "model": "anthropic/claude-sonnet-4-6",
+  "choices": [...],
+  "usage": {...},
+  "geekhub": {
+    "final_model": "anthropic/claude-sonnet-4-6",
+    "requested": [
+      "openai/gpt-5",
+      "anthropic/claude-sonnet-4-6"
+    ],
+    "attempts": [
+      { "model": "openai/gpt-5", "error": "rate_limit" }
+    ],
+    "skipped": []
+  }
+}
+```
+
+## When all fail
+
+```json
+HTTP/1.1 502 Bad Gateway
+
+{
+  "error": {
+    "type": "all_candidates_failed",
+    "requested": [...],
+    "attempts": [...],
+    "skipped": [...]
+  }
+}
+```
+
+## Pricing
+
+Charges go against `geekhub.final_model`. Failed attempts **do not** generate token charges to the user but appear in `/dashboard/usage` with `statusCode ≠ 200`.
+
+## Streaming
+
+With `stream: true`, fallback only works if failure occurs **before the first chunk**. Once your client starts receiving tokens, switching models isn't possible; errors are emitted as SSE events and the stream aborts.

@@ -1,0 +1,79 @@
+---
+title: "Welcome to Geek Hub"
+description: "One API. Every AI model. MXN billing with CFDI."
+---
+
+**Geek Hub** is the AI model gateway built for Mexico and Latin America.
+
+One key unlocks **30+ models** from the leading providers:
+
+<CardGroup cols={3}>
+  <Card title="Chat" icon="message" href="/en/api-reference/chat/overview">
+    Claude, GPT, Gemini, DeepSeek, Kimi, Grok
+  </Card>
+  <Card title="Images" icon="image" href="/en/api-reference/images/overview">
+    DALL·E, Imagen, Grok 2 Image, Flux, Recraft, Ideogram
+  </Card>
+  <Card title="Video" icon="video" href="/en/api-reference/videos/overview">
+    Veo 3.1, Runway Gen-4, Luma, Kling, Hailuo
+  </Card>
+</CardGroup>
+
+<CardGroup cols={2}>
+  <Card title="Text-to-Speech" icon="audio-lines" href="/en/features/tts">
+    TTS-1, TTS-1-HD, GPT-4o mini TTS · streaming, 6 voices, 6 formats
+  </Card>
+  <Card title="Zero Data Retention" icon="shield-check" href="/en/features/zdr">
+    Verified ZDR registry. Per-request, per-org, or per-guardrail.
+  </Card>
+</CardGroup>
+
+## Why Geek Hub
+
+<AccordionGroup>
+  <Accordion title="100% OpenAI-SDK compatible" icon="code">
+    Swap `base_url` and `api_key`. Existing OpenAI code keeps working — now with every model behind it.
+  </Accordion>
+
+  <Accordion title="MXN billing with automatic CFDI 4.0" icon="receipt">
+    Each recharge generates your SAT-stamped CFDI 4.0 at checkout. No paperwork, no middlemen.
+  </Accordion>
+
+  <Accordion title="Fixed monthly FX" icon="dollar-sign">
+    No surprise FX at month-end. You know exactly what you'll pay.
+  </Accordion>
+
+  <Accordion title="Smart routing and fallbacks" icon="route">
+    If a provider drops, your requests keep running on the next one. Your business doesn't notice.
+  </Accordion>
+
+  <Accordion title="Pay-as-you-go, no minimums" icon="circle-dollar">
+    Provider cost + 5% markup. That's it.
+  </Accordion>
+</AccordionGroup>
+
+## API surface
+
+All endpoints are OpenAI-compatible where applicable:
+
+```
+POST /v1/chat/completions       Chat with any model
+POST /v1/images/generations     Image generation
+POST /v1/videos/generations     Video generation (async)
+GET  /v1/videos/{id}            Video job status
+POST /v1/audio/speech           Text-to-Speech (streaming)
+GET  /v1/models                 Full catalog
+GET  /health                    Health check (public)
+```
+
+## Base URL
+
+```
+https://api.geekhub.mx
+```
+
+## Get started in 5 minutes
+
+<Card title="Quickstart" icon="rocket" href="/en/quickstart">
+  Create your account, generate your first API key, and make your first call in under 5 minutes.
+</Card>

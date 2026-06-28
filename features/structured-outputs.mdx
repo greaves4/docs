@@ -1,0 +1,88 @@
+---
+title: "Structured Outputs"
+description: "Garantía de cumplimiento de JSON schema. Pasa response_format y recibe contenido parseable sin retries de validación."
+icon: "file-json"
+---
+
+Cuando incluyes `response_format` en el body de tu request, el modelo garantiza que la respuesta cumple el esquema JSON que enviaste. Útil para parsing determinista sin retries. Si el modelo seleccionado no soporta esta capacidad, Geek Hub **rechaza la request antes de salir del gateway** y te devuelve la lista de modelos compatibles.
+
+## Ejemplo: extracción de factura
+
+```bash
+curl -X POST https://api.geekhub.mx/v1/chat/completions \
+  -H "Authorization: Bearer ghub_sk_live_TU_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/gpt-4.1-mini",
+    "messages": [
+      {"role":"system","content":"Eres un asistente que extrae datos de facturas."},
+      {"role":"user","content":"Factura #A123 de Geek Vibes por $12,345.67 MXN del 12 de junio de 2026."}
+    ],
+    "response_format": {
+      "type": "json_schema",
+      "json_schema": {
+        "name": "factura",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "folio": { "type": "string" },
+            "emisor": { "type": "string" },
+            "total_mxn": { "type": "number" },
+            "fecha_iso": { "type": "string", "format": "date" }
+          },
+          "required": ["folio", "emisor", "total_mxn", "fecha_iso"],
+          "additionalProperties": false
+        }
+      }
+    }
+  }'
+```
+
+El campo `content` viene como string JSON parseable. Tu app hace `JSON.parse(content)` y obtiene el objeto tipado directamente.
+
+## Modo simple
+
+Si solo necesitas un objeto JSON válido sin schema fijo:
+
+```json
+"response_format": { "type": "json_object" }
+```
+
+<Warning>
+OpenAI requiere que tu prompt incluya la palabra "json" cuando usas `json_object`. No es un requisito de Geek Hub sino del proveedor.
+</Warning>
+
+## Modelos compatibles
+
+12 de 17 modelos chat soportan structured outputs.
+
+| Familia | Modelos |
+|---|---|
+| Anthropic | claude-opus-4-8, claude-sonnet-4-6, claude-haiku-4-5 |
+| Google | gemini-2.5-pro, gemini-2.5-flash |
+| OpenAI | gpt-5, gpt-4.1, gpt-4.1-mini, o4-mini |
+| xAI | grok-4, grok-3, grok-3-mini |
+
+## Rechazo
+
+```json
+HTTP/1.1 422 Unprocessable Entity
+
+{
+  "error": {
+    "type": "structured_outputs_not_supported",
+    "message": "El modelo \"deepseek/deepseek-chat\" no soporta structured outputs.",
+    "model": "deepseek/deepseek-chat",
+    "compatible_models": [
+      "anthropic/claude-opus-4-8",
+      "openai/gpt-4.1-mini",
+      "..."
+    ]
+  }
+}
+```
+
+<Tip>
+Combinable con [Model Fallbacks](/features/fallbacks): si pasas una lista de candidatos, los que no soporten structured outputs se **saltan** en vez de fallar.
+</Tip>

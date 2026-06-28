@@ -1,0 +1,64 @@
+---
+title: "Zero Data Retention"
+description: "Contractual guarantee: the model provider stores neither request nor response. Three activation levels with a verified-endpoints registry."
+icon: "shield-check"
+---
+
+ZDR is a contractual guarantee from the model provider: the request and response **are not stored in any form** (logs, telemetry, cache, fine-tuning). Geek Hub maintains a list of endpoints where this guarantee is signed and verified, and **rejects ZDR-marked requests targeting endpoints outside the list**.
+
+## Three activation levels
+
+<Steps>
+  <Step title="Per request">
+    Pass `zdr: true` in your body. The gateway checks the target model against the registry. Verified → proceed. Not verified → HTTP 422 with reason.
+  </Step>
+  <Step title="Per account">
+    In `/dashboard/settings → Zero Data Retention` enable ZDR per provider group (Anthropic, OpenAI, Google, Others). When a group is on, all org requests to that group are checked.
+  </Step>
+  <Step title="Per guardrail">
+    [Guardrails](/en/features/guardrails) let you configure ZDR per user or per API key. Useful when different teams under the same org need different policies.
+  </Step>
+</Steps>
+
+## Example request
+
+```bash
+curl -X POST https://api.geekhub.mx/v1/chat/completions \
+  -H "Authorization: Bearer ghub_sk_live_YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "anthropic/claude-sonnet-4-6",
+    "messages": [{"role":"user","content":"Hi"}],
+    "zdr": true
+  }'
+```
+
+## Verified endpoints
+
+| Group | Models | Verified |
+|---|---|---|
+| Anthropic | claude-opus-4-8, claude-sonnet-4-6, claude-haiku-4-5 | 3 / 3 |
+| OpenAI | gpt-5, gpt-4.1, gpt-4.1-mini, o4-mini, tts-1, tts-1-hd, gpt-4o-mini-tts | 7 / 7 |
+| Google | gemini-2.5-pro, gemini-2.5-flash | 2 / 2 |
+| Others (DeepSeek, xAI, Moonshot, fal) | — | 0 / 8 |
+
+## Rejection format
+
+```json
+{
+  "error": {
+    "type": "zdr_not_verified",
+    "message": "Provider does not offer a signed ZDR policy verified by Geek Hub.",
+    "model": "deepseek/deepseek-chat",
+    "verified_alternatives": ["openai/gpt-5", "anthropic/claude-sonnet-4-6"]
+  }
+}
+```
+
+## GDPR — art. 5(1)(e) data minimization
+
+ZDR is part of your GDPR **art. 5(1)(e)** (storage limitation) compliance posture. If your provider doesn't retain the conversation, retention at that layer is effectively zero — reducing the scope of your upstream processing obligations.
+
+<Note>
+ZDR covers the **model provider's** retention. Geek Hub does store billing metadata (model id, tokens, cost, latency) for CFDI/Stripe. Message **content** is not persisted at the gateway layer.
+</Note>

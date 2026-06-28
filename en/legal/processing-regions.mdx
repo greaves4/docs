@@ -1,0 +1,84 @@
+---
+title: "Processing regions (GDPR art. 13)"
+description: "Per model and provider: country where data is processed, whether the region is configurable, and applicable legal framework. GDPR art. 13 compliant."
+icon: "globe"
+---
+
+This page complies with **GDPR article 13** on international data transfers. For each model in the catalog we indicate where data is processed, whether the region is configurable, and under which legal framework the transfer is authorized. The table **is generated from the catalog**, so new providers appear automatically.
+
+<Tip>
+**🇪🇺 ZDR + European endpoint note**
+
+When you enable [Zero Data Retention](/en/features/zdr) and select a provider with an EU endpoint (today: Google Vertex AI region `europe-west*` and OpenAI Azure Europe), **data never leaves the EU** — neither during processing nor after, since ZDR guarantees no provider-side persistence. This combination drives the international-transfer surface to zero.
+</Tip>
+
+## Legal frameworks in use
+
+- **EU/EEA** — data does not leave the EU/EEA. Default framework (no international transfer basis required).
+- **EU-US DPF** — *EU-US Data Privacy Framework*, adequacy decision adopted by the European Commission on July 10, 2023. Covers EU→US transfers to DPF-certified organizations.
+- **SCC** — *Standard Contractual Clauses* (Decision (EU) 2021/914), module 2 controller-to-processor. Geek Hub signs SCC with each provider not covered by an adequacy decision.
+
+## Table by provider
+
+### OpenAI
+
+| Model | Country | Configurable | Framework |
+|---|---|---|---|
+| gpt-5, gpt-4.1, gpt-4.1-mini, o4-mini | United States | Yes | EU-US DPF |
+| tts-1, tts-1-hd, gpt-4o-mini-tts | United States | Yes | EU-US DPF |
+| gpt-image-1, dall-e-3 | United States | Yes | EU-US DPF |
+
+Default region `us-east`. Europe available via Azure OpenAI Service and Europe data residency on Enterprise plan.
+
+### Anthropic
+
+| Model | Country | Configurable | Framework |
+|---|---|---|---|
+| claude-opus-4-8, claude-sonnet-4-6, claude-haiku-4-5 | United States | No | EU-US DPF |
+
+Processes in US Tier-2 datacenters. EU residency announced for H2 2026.
+
+### Google
+
+| Model | Country | Configurable | Framework |
+|---|---|---|---|
+| gemini-2.5-pro, gemini-2.5-flash | United States / multi-region | Yes | EU-US DPF |
+| imagen-4 | United States / multi-region | Yes | EU-US DPF |
+| veo-3, veo-3.1 | United States / multi-region | Yes | EU-US DPF |
+
+Default `us-central1`. Vertex AI lets you select `europe-west1`, `europe-west4` (NL) and 30+ regions. ZDR + Vertex EU = data stays in EU.
+
+### DeepSeek
+
+| Model | Country | Configurable | Framework |
+|---|---|---|---|
+| deepseek-chat, deepseek-reasoner | China | No | SCC |
+
+Processes in Chinese datacenters. Not DPF-covered. Geek Hub signs SCC module 2.
+
+### Moonshot
+
+| Model | Country | Configurable | Framework |
+|---|---|---|---|
+| kimi-k2, kimi-k2-highspeed, moonshot-v1-128k | China | No | SCC |
+
+Processes in China. Not DPF-covered. SCC applicable.
+
+### xAI
+
+| Model | Country | Configurable | Framework |
+|---|---|---|---|
+| grok-4, grok-3, grok-3-mini, grok-2-image | United States | No | EU-US DPF |
+
+### fal.ai
+
+| Model | Country | Configurable | Framework |
+|---|---|---|---|
+| flux-1.1-pro, recraft-v3, ideogram-v2, sd-3.5-large | US / multi-region | No | EU-US DPF |
+| runway-gen-4, luma-ray-2, kling-2, hailuo-02 | US / multi-region | No | EU-US DPF |
+
+Meta-provider; actual processing happens in the underlying provider's region.
+
+## Activating European endpoints
+
+For now, selecting an EU region for Google Vertex AI is a gateway routing config (contact us). A self-service selector is being built in `/dashboard/settings` to pin region per API key.
