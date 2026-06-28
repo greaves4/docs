@@ -8,187 +8,143 @@
     "dark": "#2A1638"
   },
   "favicon": "/favicon.svg",
-  "languages": [
-    {
-      "language": "es",
-      "default": true,
-      "navigation": {
-        "anchors": [
+  "navigation": {
+    "anchors": [
+      {
+        "anchor": "Documentación",
+        "icon": "book-open",
+        "groups": [
           {
-            "anchor": "Documentación",
-            "icon": "book-open",
-            "groups": [
-              {
-                "group": "Empezar",
-                "pages": ["introduction", "quickstart", "authentication"]
-              },
-              {
-                "group": "Conceptos",
-                "pages": [
-                  "concepts/billing",
-                  "concepts/balance",
-                  "concepts/errors"
-                ]
-              },
-              {
-                "group": "Features avanzadas",
-                "pages": [
-                  "features/zdr",
-                  "features/structured-outputs",
-                  "features/fallbacks",
-                  "features/guardrails",
-                  "features/tts"
-                ]
-              },
-              {
-                "group": "Legal & cumplimiento",
-                "pages": ["legal/processing-regions"]
-              }
+            "group": "Empezar",
+            "pages": ["introduction", "quickstart", "authentication"]
+          },
+          {
+            "group": "Conceptos",
+            "pages": [
+              "concepts/billing",
+              "concepts/balance",
+              "concepts/errors"
             ]
           },
           {
-            "anchor": "API Reference",
-            "icon": "code",
-            "groups": [
-              {
-                "group": "Chat",
-                "pages": [
-                  "api-reference/chat/overview",
-                  "api-reference/chat/completions"
-                ]
-              },
-              {
-                "group": "Imágenes",
-                "pages": [
-                  "api-reference/images/overview",
-                  "api-reference/images/generations"
-                ]
-              },
-              {
-                "group": "Video",
-                "pages": [
-                  "api-reference/videos/overview",
-                  "api-reference/videos/generations",
-                  "api-reference/videos/poll"
-                ]
-              }
+            "group": "Features avanzadas",
+            "pages": [
+              "features/zdr",
+              "features/structured-outputs",
+              "features/fallbacks",
+              "features/guardrails",
+              "features/tts"
             ]
           },
           {
-            "anchor": "Modelos",
-            "icon": "sparkles",
-            "groups": [
-              {
-                "group": "Catálogo",
-                "pages": [
-                  "models/index",
-                  "models/chat",
-                  "models/images",
-                  "models/videos"
-                ]
-              }
-            ]
-          },
-          {
-            "anchor": "Soporte",
-            "href": "mailto:soporte@geekhub.mx",
-            "icon": "life-ring"
+            "group": "Legal & cumplimiento",
+            "pages": ["legal/processing-regions"]
           }
         ]
-      }
-    },
-    {
-      "language": "en",
-      "navigation": {
-        "anchors": [
+      },
+      {
+        "anchor": "API Reference",
+        "icon": "code",
+        "groups": [
           {
-            "anchor": "Documentation",
-            "icon": "book-open",
-            "groups": [
-              {
-                "group": "Get started",
-                "pages": [
-                  "en/introduction",
-                  "en/quickstart",
-                  "en/authentication"
-                ]
-              },
-              {
-                "group": "Concepts",
-                "pages": [
-                  "en/concepts/billing",
-                  "en/concepts/balance",
-                  "en/concepts/errors"
-                ]
-              },
-              {
-                "group": "Advanced features",
-                "pages": [
-                  "en/features/zdr",
-                  "en/features/structured-outputs",
-                  "en/features/fallbacks",
-                  "en/features/guardrails",
-                  "en/features/tts"
-                ]
-              },
-              {
-                "group": "Legal & compliance",
-                "pages": ["en/legal/processing-regions"]
-              }
+            "group": "Chat",
+            "pages": [
+              "api-reference/chat/overview",
+              "api-reference/chat/completions"
             ]
           },
           {
-            "anchor": "API Reference",
-            "icon": "code",
-            "groups": [
-              {
-                "group": "Chat",
-                "pages": [
-                  "en/api-reference/chat/overview",
-                  "en/api-reference/chat/completions"
-                ]
-              },
-              {
-                "group": "Images",
-                "pages": [
-                  "en/api-reference/images/overview",
-                  "en/api-reference/images/generations"
-                ]
-              },
-              {
-                "group": "Video",
-                "pages": [
-                  "en/api-reference/videos/overview",
-                  "en/api-reference/videos/generations",
-                  "en/api-reference/videos/poll"
-                ]
-              }
+            "group": "Imágenes",
+            "pages": [
+              "api-reference/images/overview",
+              "api-reference/images/generations"
             ]
           },
           {
-            "anchor": "Models",
-            "icon": "sparkles",
-            "groups": [
-              {
-                "group": "Catalog",
-                "pages": [
-                  "en/models/index",
-                  "en/models/chat",
-                  "en/models/images",
-                  "en/models/videos"
-                ]
-              }
+            "group": "Video",
+            "pages": [
+              "api-reference/videos/overview",
+              "api-reference/videos/generations",
+              "api-reference/videos/poll"
             ]
-          },
-          {
-            "anchor": "Support",
-            "href": "mailto:soporte@geekhub.mx",
-            "icon": "life-ring"
           }
         ]
+      },
+      {
+        "anchor": "Modelos",
+        "icon": "sparkles",
+        "groups": [
+          {
+            "group": "Catálogo",
+            "pages": [
+              "models/index",
+              "models/chat",
+              "models/images",
+              "models/videos"
+            ]
+          }
+        ]
+      },
+      {
+        "anchor": "English",
+        "icon": "language",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": ["en/introduction", "en/quickstart", "en/authentication"]
+          },
+          {
+            "group": "Concepts",
+            "pages": [
+              "en/concepts/billing",
+              "en/concepts/balance",
+              "en/concepts/errors"
+            ]
+          },
+          {
+            "group": "Advanced features",
+            "pages": [
+              "en/features/zdr",
+              "en/features/structured-outputs",
+              "en/features/fallbacks",
+              "en/features/guardrails",
+              "en/features/tts"
+            ]
+          },
+          {
+            "group": "Legal & compliance",
+            "pages": ["en/legal/processing-regions"]
+          },
+          {
+            "group": "API Reference",
+            "pages": [
+              "en/api-reference/chat/overview",
+              "en/api-reference/chat/completions",
+              "en/api-reference/images/overview",
+              "en/api-reference/images/generations",
+              "en/api-reference/videos/overview",
+              "en/api-reference/videos/generations",
+              "en/api-reference/videos/poll"
+            ]
+          },
+          {
+            "group": "Models",
+            "pages": [
+              "en/models/index",
+              "en/models/chat",
+              "en/models/images",
+              "en/models/videos"
+            ]
+          }
+        ]
+      },
+      {
+        "anchor": "Soporte",
+        "href": "mailto:soporte@geekhub.mx",
+        "icon": "life-ring"
       }
-    }
-  ],
+    ]
+  },
   "logo": {
     "light": "/logo-light.svg",
     "dark": "/logo-dark.svg"
