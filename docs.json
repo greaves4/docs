@@ -168,10 +168,5 @@
       "href": "https://app.geekhub.mx/signup"
     }
   },
-  "footer": {
-    "socials": {
-      "github": "https://github.com/greaves4",
-      "x": "https://x.com/geekvibes"
-    }
-  }
+  "footer": {}
 }
