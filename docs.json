@@ -33,7 +33,8 @@
               "features/structured-outputs",
               "features/fallbacks",
               "features/guardrails",
-              "features/tts"
+              "features/tts",
+              "features/vector-stores"
             ]
           },
           {
@@ -114,7 +115,8 @@
               "en/features/structured-outputs",
               "en/features/fallbacks",
               "en/features/guardrails",
-              "en/features/tts"
+              "en/features/tts",
+              "en/features/vector-stores"
             ]
           },
           {
