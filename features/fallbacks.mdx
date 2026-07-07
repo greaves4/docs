@@ -92,3 +92,42 @@ El cobro se hace contra `geekhub.final_model`. Los intentos fallidos **no** gene
 ## Streaming
 
 Con `stream: true` el fallback solo funciona si la falla ocurre **antes del primer chunk**. Una vez que tu cliente recibe tokens, no es posible cambiar de modelo; el error sale como evento SSE y se aborta.
+
+## Auto routing por costo o latencia
+
+En vez de decidir tú el orden, deja que el gateway ordene los candidatos según una estrategia:
+
+```json
+{
+  "model": "auto",
+  "routing": {
+    "strategy": "cheapest",
+    "candidates": [
+      "openai/gpt-5",
+      "anthropic/claude-sonnet-4-6",
+      "google/gemini-2.5-flash"
+    ]
+  },
+  "messages": [{"role": "user", "content": "..."}]
+}
+```
+
+Estrategias:
+
+- **`cheapest`** — ordena por precio input+output ascendente. Predecible, no requiere histórico.
+- **`fastest`** — usa el p50 de latency de la última hora (mínimo 10 requests). Si no hay data suficiente, cae a `cheapest`.
+- **`balanced`** — 60% precio + 40% latency normalizados 0-1.
+
+El array resultante se recorre como si hubieras mandado `model` como array. La respuesta incluye qué orden aplicó:
+
+```json
+{
+  "geekhub": {
+    "final_model": "google/gemini-2.5-flash",
+    "routing": {
+      "strategy": "cheapest",
+      "ordered": ["google/gemini-2.5-flash", "openai/gpt-5", "anthropic/claude-sonnet-4-6"]
+    }
+  }
+}
+```

@@ -92,3 +92,42 @@ Charges go against `geekhub.final_model`. Failed attempts **do not** generate to
 ## Streaming
 
 With `stream: true`, fallback only works if failure occurs **before the first chunk**. Once your client starts receiving tokens, switching models isn't possible; errors are emitted as SSE events and the stream aborts.
+
+## Auto routing by cost or latency
+
+Instead of ordering candidates yourself, let the gateway order them by strategy:
+
+```json
+{
+  "model": "auto",
+  "routing": {
+    "strategy": "cheapest",
+    "candidates": [
+      "openai/gpt-5",
+      "anthropic/claude-sonnet-4-6",
+      "google/gemini-2.5-flash"
+    ]
+  },
+  "messages": [{"role": "user", "content": "..."}]
+}
+```
+
+Strategies:
+
+- **`cheapest`** — sorts by input+output price ascending. Predictable, no history required.
+- **`fastest`** — uses p50 latency over the last hour (min 10 requests per model). Falls back to `cheapest` if there isn't enough data.
+- **`balanced`** — 60% cost + 40% latency, both normalized 0-1.
+
+The resulting array is traversed like a manual `model` list. Response includes the applied order:
+
+```json
+{
+  "geekhub": {
+    "final_model": "google/gemini-2.5-flash",
+    "routing": {
+      "strategy": "cheapest",
+      "ordered": ["google/gemini-2.5-flash", "openai/gpt-5", "anthropic/claude-sonnet-4-6"]
+    }
+  }
+}
+```
