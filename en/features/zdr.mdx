@@ -62,3 +62,20 @@ ZDR is part of your GDPR **art. 5(1)(e)** (storage limitation) compliance postur
 <Note>
 ZDR covers the **model provider's** retention. Geek Hub does store billing metadata (model id, tokens, cost, latency) for CFDI/Stripe. Message **content** is not persisted at the gateway layer.
 </Note>
+
+## What we persist vs what we don't
+
+No ambiguity — this is how we separate content (prompt/response) from metadata (billing and audit):
+
+| Data type | ZDR on | Persisted | Where | Retention |
+|---|---|---|---|---|
+| Message text (user/assistant/system) | Yes | ❌ No (request memory only) | — | 0 |
+| Prompt images | Yes | ❌ No | — | 0 |
+| Generated images/videos (output) | Yes | ✅ Yes (so you can download them) | Supabase Storage | Account lifetime or upon request |
+| Input and output token counts | Always | ✅ Yes | Postgres `requests` | 7 years (SAT tax obligation) |
+| Model, provider, request_id, timestamp | Always | ✅ Yes | Postgres `requests` | 7 years |
+| Cost USD/MXN per request | Always | ✅ Yes | Postgres `requests` | 7 years |
+| Provider error codes | Always | ✅ Yes (code only, not content) | Postgres `requests` | 90 days |
+| Gateway technical logs (HTTP status, latency) | Always | ✅ Yes | stderr → aggregator | 30 days |
+
+**Hard rule:** anything stored in `requests` is numeric or identifier metadata. **We never store the `content` of `messages[]` nor the `prompt` from `/images`, `/videos`, `/audio`**, not even hashed, not even with ZDR off. If you need to retain conversations yourself, use a `request.completed` webhook to your own backend (see [Webhooks](/en/features/webhooks)).

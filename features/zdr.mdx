@@ -66,3 +66,20 @@ ZDR es parte de tu estrategia de cumplimiento del **artículo 5(1)(e) del GDPR**
 <Note>
 ZDR cubre la retención del **proveedor del modelo**. Geek Hub sí almacena metadatos de facturación (model id, tokens, costo, latency) para emisiones CFDI/Stripe. El **contenido** de los mensajes no se persiste a nivel gateway.
 </Note>
+
+## Qué se persiste vs qué no
+
+Sin ambigüedad — así separamos contenido (prompt/respuesta) de metadatos (facturación y auditoría):
+
+| Tipo de dato | ZDR activo | Se persiste | Dónde | Retención |
+|---|---|---|---|---|
+| Texto de mensajes (user/assistant/system) | Sí | ❌ No (solo memoria del request) | — | 0 |
+| Imágenes en prompt | Sí | ❌ No | — | 0 |
+| Imágenes/videos generados (output) | Sí | ✅ Sí (para que puedas descargarlos) | Supabase Storage | Vida útil de tu cuenta o eliminación bajo petición |
+| Tokens de entrada y salida | Siempre | ✅ Sí | Postgres `requests` | 7 años (obligación fiscal SAT) |
+| Modelo, provider, request_id, timestamp | Siempre | ✅ Sí | Postgres `requests` | 7 años |
+| Costo USD/MXN por request | Siempre | ✅ Sí | Postgres `requests` | 7 años |
+| Códigos de error del provider | Siempre | ✅ Sí (código, no contenido) | Postgres `requests` | 90 días |
+| Logs técnicos del gateway (HTTP status, latency) | Siempre | ✅ Sí | stderr → agregador | 30 días |
+
+**Regla clara:** cualquier campo capturado a nivel `requests` es metadata numérica o de identificación. **Nunca guardamos el `content` de `messages[]` ni el `prompt` de `/images`, `/videos`, `/audio`**, ni siquiera hasheado, ni siquiera con ZDR desactivado. Si necesitas retener conversaciones tú, usa un webhook `request.completed` desde tu propio backend (ver [Webhooks](/features/webhooks)).
