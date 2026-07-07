@@ -1,0 +1,83 @@
+---
+title: "POST /v1/embeddings"
+description: "Genera embeddings de texto compatibles OpenAI para retrieval, clustering, clasificación y RAG."
+icon: "vector-square"
+---
+
+Endpoint compatible con OpenAI para generar embeddings — vectores densos de un texto para usar en retrieval, clustering, clasificación o RAG. Se cobra por token de input.
+
+## Modelos disponibles
+
+| Modelo | Dimensiones | Precio /1M tokens |
+|---|---|---|
+| `openai/text-embedding-3-small` | 1536 | $0.02 USD |
+| `openai/text-embedding-3-large` | 3072 | $0.13 USD |
+
+## Ejemplo básico
+
+```bash
+curl -X POST https://api.geekhub.mx/v1/embeddings \
+  -H "Authorization: Bearer ghub_sk_live_TU_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/text-embedding-3-small",
+    "input": "El zorro café salta sobre el perro perezoso"
+  }'
+```
+
+Respuesta:
+
+```json
+{
+  "object": "list",
+  "model": "openai/text-embedding-3-small",
+  "data": [
+    { "object": "embedding", "index": 0, "embedding": [0.012, -0.043, ...] }
+  ],
+  "usage": {
+    "prompt_tokens": 12,
+    "total_tokens": 12,
+    "cost_usd": 0.00000025,
+    "cost_mxn": 0.000005
+  }
+}
+```
+
+## Batch de textos
+
+`input` acepta también un array (hasta 2048 elementos):
+
+```json
+{
+  "model": "openai/text-embedding-3-large",
+  "input": [
+    "Primer documento…",
+    "Segundo documento…",
+    "Tercero…"
+  ]
+}
+```
+
+El `data` en la respuesta viene ordenado según el input.
+
+## Reducir dimensiones
+
+Los modelos `-3-*` permiten pedir una dimensionalidad menor (útil para bajar el costo de almacenamiento en tu vector DB):
+
+```json
+{
+  "model": "openai/text-embedding-3-large",
+  "input": "Texto…",
+  "dimensions": 512
+}
+```
+
+**Nota:** el precio se calcula por token de input, no por dimensión. Reducir dimensiones no baja el costo del embedding — solo el costo de tu storage y latencia de búsqueda.
+
+## Zero Data Retention
+
+Sigue las mismas reglas que `/chat/completions` — activa `zdr: true` o configura tu guardrail. text-embedding-3-* de OpenAI está en la lista verificada.
+
+## Vector store gestionado
+
+En la roadmap: `POST /v1/vector-stores` para crear colecciones, upload y query semántica sin montar tu propio Pinecone/pgvector. Por ahora consume el endpoint directo y guarda los vectores donde ya tengas infraestructura.

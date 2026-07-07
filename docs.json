@@ -67,6 +67,12 @@
               "api-reference/videos/generations",
               "api-reference/videos/poll"
             ]
+          },
+          {
+            "group": "Embeddings",
+            "pages": [
+              "api-reference/embeddings/generations"
+            ]
           }
         ]
       },
@@ -124,7 +130,8 @@
               "en/api-reference/images/generations",
               "en/api-reference/videos/overview",
               "en/api-reference/videos/generations",
-              "en/api-reference/videos/poll"
+              "en/api-reference/videos/poll",
+              "en/api-reference/embeddings/generations"
             ]
           },
           {

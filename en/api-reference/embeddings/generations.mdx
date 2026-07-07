@@ -1,0 +1,83 @@
+---
+title: "POST /v1/embeddings"
+description: "OpenAI-compatible text embeddings for retrieval, clustering, classification and RAG."
+icon: "vector-square"
+---
+
+OpenAI-compatible endpoint to generate text embeddings — dense vectors of a text for retrieval, clustering, classification or RAG. Billed per input token.
+
+## Available models
+
+| Model | Dimensions | Price /1M tokens |
+|---|---|---|
+| `openai/text-embedding-3-small` | 1536 | $0.02 USD |
+| `openai/text-embedding-3-large` | 3072 | $0.13 USD |
+
+## Basic example
+
+```bash
+curl -X POST https://api.geekhub.mx/v1/embeddings \
+  -H "Authorization: Bearer ghub_sk_live_YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/text-embedding-3-small",
+    "input": "The quick brown fox jumps over the lazy dog"
+  }'
+```
+
+Response:
+
+```json
+{
+  "object": "list",
+  "model": "openai/text-embedding-3-small",
+  "data": [
+    { "object": "embedding", "index": 0, "embedding": [0.012, -0.043, ...] }
+  ],
+  "usage": {
+    "prompt_tokens": 12,
+    "total_tokens": 12,
+    "cost_usd": 0.00000025,
+    "cost_mxn": 0.000005
+  }
+}
+```
+
+## Batching
+
+`input` also accepts an array (up to 2048 items):
+
+```json
+{
+  "model": "openai/text-embedding-3-large",
+  "input": [
+    "First document…",
+    "Second document…",
+    "Third…"
+  ]
+}
+```
+
+`data` in the response is ordered to match the input.
+
+## Reduce dimensions
+
+`-3-*` models let you request a lower dimensionality (useful to shrink storage in your vector DB):
+
+```json
+{
+  "model": "openai/text-embedding-3-large",
+  "input": "Text…",
+  "dimensions": 512
+}
+```
+
+**Note:** price is per input token, not per dimension. Reducing dimensions doesn't reduce the embedding cost — only your storage cost and search latency.
+
+## Zero Data Retention
+
+Same rules as `/chat/completions` — set `zdr: true` or configure your guardrail. OpenAI's text-embedding-3-* is on the verified list.
+
+## Managed vector store
+
+Coming: `POST /v1/vector-stores` for hosted collections, upload and semantic query without running your own Pinecone/pgvector. For now, use the endpoint directly and store vectors wherever your infrastructure lives.
